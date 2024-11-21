@@ -40,7 +40,6 @@ npm start
 
 You can access the deployed version of the project at the following link:
 
-[**Deployed Application**]([https://list-product-test-g96ukm0qv-duongne1s-projects.vercel.app/])
-
+[**Deployed Application**](https://list-product-test-g96ukm0qv-duongne1s-projects.vercel.app/)
 
 
