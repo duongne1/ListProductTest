@@ -1,20 +1,18 @@
-# Infinite Scroll Project
+## Requirements
 
-This project demonstrates the implementation of an infinite scroll feature using React. It fetches and displays a list of products, implementing lazy loading for images to optimize performance.
+**Using this [product api](https://dummyjson.com/docs/products) to implement the infinite scrolling list for display list of products.**
 
-## Table of Contents
+1. Each time the user **scrolls to the end of the list, fetch the next 20 products**.
+2. **Display the list of products** with relevant information (e.g., name, price, image).
+    1. Keep the design as simple as possible. Please note that the **design will not be evaluated.**
+3. Implement an **input for searching product name** (using */products/search?q* ). 
+Whenever user typing, fetch data and update the product list.
+4. Products data should be deserialized after fetched from api.
 
-- [Project Overview](#project-overview)
-- [Technologies Used](#technologies-used)
-- [Setup Instructions](#setup-instructions)
-- [Running the Project Locally](#running-the-project-locally)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Project Overview
 
-This project is built using React and TypeScript. It incorporates infinite scrolling using `react-infinite-scroll-component` and lazy loading of images using `react-lazy-load-image-component`. The goal of this project is to provide a smooth user experience with minimal data loading at once and optimized image loading.
+This project is built using React and TypeScript. It incorporates infinite scrolling using `react-infinite-scroll-component` and lazy loading of images using `react-lazy-load-image-component`. The goal of this project is to provide a smooth user experience with minimal data loading at once and optimized image loading. Additionally, the project includes a search feature that uses `lodash.debounce` to optimize performance by limiting the number of times the search function is triggered during user input.
 
 ## Technologies Used
 
@@ -23,19 +21,16 @@ This project is built using React and TypeScript. It incorporates infinite scrol
 - **react-infinite-scroll-component** - A library to implement infinite scrolling.
 - **react-lazy-load-image-component** - A library to implement lazy loading for images.
 - **Axios** - For fetching data from APIs.
-- **CSS/SCSS** - For styling the components.
-
-## Setup Instructions
-
-### Prerequisites
-
-- Make sure you have **Node.js** installed on your system.
-- Install **npm** (Node Package Manager) if it's not already installed.
+- **lodash.debounce** - A utility function from Lodash used to optimize the search feature by debouncing user input and reducing the number of search requests.
+- **CSS** - For styling the components.
 
 ### Installing Dependencies
 
 Clone the repository and navigate into the project folder:
 
 ```bash
-git clone https://github.com/your-username/infinite-scroll.git
-cd infinite-scroll
+git clone https://github.com/duongne1/ListProductTest.git
+cd ListProductTest
+npm install
+npm start
+
