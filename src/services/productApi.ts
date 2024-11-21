@@ -20,6 +20,10 @@ export const fetchProducts = async (skip: number, limit: number): Promise<Produc
 
 export const searchProducts = async (query: string): Promise<Product[]> => {
   const response = await axios.get(`${API_URL}/products/search?q=${query}`);
-  const data = response.data;
-  return deserializeProducts(data); 
+  const products = deserializeProducts(response.data);
+  const filteredProducts = products.filter((product: any) =>
+    product.title.toLowerCase().includes(query.toLowerCase())
+  );
+  
+  return filteredProducts; 
 };

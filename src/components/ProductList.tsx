@@ -5,13 +5,14 @@ import { Product } from '../types/Product';
 import debounce from 'lodash.debounce';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
-
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [productSearch, setProductSearch] = useState<Product[]>([]);  
   const [hasMore, setHasMore] = useState(true);
   const [skip, setSkip] = useState(0);
   const [query, setQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const LIMIT = 20;
 
@@ -19,34 +20,45 @@ const ProductList: React.FC = () => {
   const handleSearchDebounced = useCallback(
     debounce(async (searchQuery: string) => {
       setIsLoading(true);
+      if (searchQuery.trim() === '') {
+        setProductSearch([]); 
+        
+        setHasMore(true); 
+        return;
+      }
       const searchResults = await searchProducts(searchQuery);
-      setProducts(searchResults);
-      setSkip(0);  
-      setHasMore(false);  
+      setProductSearch(searchResults); 
+      setHasMore(false); 
       setIsLoading(false);
-    }, 500), []
+      setIsFirstLoad(false);
+    }, 300),
+    []
   );
-
+  
 
   useEffect(() => {
-    if (query === '') {
-      loadMoreProducts();  
+    if (query.trim() === '') {
+      setProductSearch([]); 
+      setHasMore(true); 
+      loadMoreProducts();
     } else {
-      handleSearchDebounced(query);  
+      setIsLoading(true);
+      handleSearchDebounced(query);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, handleSearchDebounced]);
 
   const loadMoreProducts = async () => {
-    if (isLoading) return; 
+    if (isLoading) return;
     setIsLoading(true);
     const newProducts = await fetchProducts(skip, LIMIT);
     setProducts((prev) => [...prev, ...newProducts]);
-    setSkip(skip + LIMIT);
-    if (newProducts.length < LIMIT) setHasMore(false);  
+    setSkip((prev) => prev + LIMIT);
+    if (newProducts.length < LIMIT) setHasMore(false);
     setIsLoading(false);
+    setIsFirstLoad(false);
   };
-
+  const displayedProducts = query.trim() !== '' ? productSearch : products;
   return (
     <div>
       <input
@@ -54,22 +66,30 @@ const ProductList: React.FC = () => {
         placeholder="Search products..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        style={{ width: '40%', padding: '10px', marginBottom: '10px', marginLeft: '10px' }}
+        style={{
+          width: '40%',
+          padding: '10px',
+          marginBottom: '10px',
+          marginLeft: '10px',
+        }}
       />
-      {isLoading && <h4>Loading...</h4>} 
+      {isLoading  && <h4>Loading...</h4>} 
       <InfiniteScroll
-        dataLength={products.length}
+        dataLength={products?.length}
         next={loadMoreProducts}
         hasMore={hasMore}
-        loader={!isLoading &&<h4>Loading...</h4>}
+        loader={isLoading && !isFirstLoad && <h4>Loading more...</h4>} 
       >
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px' }}>
-          {products.map((product, index) => (
-            <div key={index} style={{ border: '1px solid #ddd', padding: '5px', width: '160px' }}>
-            <LazyLoadImage
-                src={product.thumbnail} 
-                alt={product.title} 
-                effect="blur" 
+          {displayedProducts?.map((product, index) => (
+            <div
+              key={index}
+              style={{ border: '1px solid #ddd', padding: '5px', width: '160px' }}
+            >
+              <LazyLoadImage
+                src={product.thumbnail}
+                alt={product.title}
+                effect="blur"
                 style={{ width: '100%' }}
               />
               <h3 style={{ fontSize: '16px' }}>{product.title}</h3>
@@ -78,6 +98,7 @@ const ProductList: React.FC = () => {
           ))}
         </div>
       </InfiniteScroll>
+      {productSearch.length === 0 && query.trim() !== '' && !isLoading && <h4>No results found</h4>}
     </div>
   );
 };
