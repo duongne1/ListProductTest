@@ -73,12 +73,12 @@ const ProductList: React.FC = () => {
           marginLeft: '10px',
         }}
       />
-      {isLoading  && <h4>Loading...</h4>} 
+      {isLoading && isFirstLoad  && <h4>Loading...</h4>} 
       <InfiniteScroll
         dataLength={products?.length}
         next={loadMoreProducts}
         hasMore={hasMore}
-        loader={isLoading && !isFirstLoad && <h4>Loading more...</h4>} 
+        loader={isLoading && !isFirstLoad && <h4>Loading ...</h4>} 
       >
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px' }}>
           {displayedProducts?.map((product, index) => (
